@@ -14,25 +14,26 @@ class ZMQHandler(logging.Handler):
 
     # ZMQ socket
     socket = None
+    context = None
 
     def __init__(self, include_html=False):
         logging.Handler.__init__(self)
         self.include_html = include_html
 
         # Get socket instance
-        if self.socket is None:
-            self.socket = self.init_zmq_socket()
+        if self.socket is None or self.context is None:
+            self.init_zmq_socket()
 
     def init_zmq_socket(self):
         """Initialize a zmq connection
 
         Returns a socket"""
-        context = zmq.Context()
+        self.context = zmq.Context()
 
-        socket = context.socket(zmq.PUB)
-        socket.bind('tcp://*:5556')
+        self.socket = self.context.socket(zmq.PUB)
+        self.socket.bind('ipc:///tmp/zmqlogs')
 
-        return socket
+        self.socket
 
     def collect_message(self, record):
         """Collects message from record
@@ -61,8 +62,14 @@ class ZMQHandler(logging.Handler):
         return json.dumps(message)
 
     def send_message(self, formatted_message):
-        """Sends the message via ZMQ"""
-        self.socket.send(formatted_message)
+        """Sends the message via ZMQ
+
+        Return true or false depending on error or not"""
+        try:
+            self.socket.send(formatted_message)
+        except Exception:
+            # Gotta catch them' all
+            return False
 
         # Message was sent successfully
         return True
