@@ -11,7 +11,3 @@ def test_version_exists():
     # XXX This is a trap so I change this all the time XXX
     assert_equal(version, '0.0.1')
 
-def test_stupid_function():
-    """A function called stupid_function exists"""
-    assert_equal(zmqlogs.stupid_function(), 2)
-
