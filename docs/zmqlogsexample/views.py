@@ -1,5 +1,6 @@
 import logging
 
+from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -16,6 +17,14 @@ def home(request):
     message = request.POST.get('message')
 
     getattr(log, log_type)(message, extra={'request': request})
+
+    log_text = "{0} log successful: '{1}'".format(log_type.upper(), message)
+    if log_type == 'debug':
+        messages.success(request, log_text)
+    if log_type == 'critical':
+        messages.error(request, log_text)
+    else:
+        getattr(messages, log_type)(request, log_text)
 
     return HttpResponseRedirect('/')
 
