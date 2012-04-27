@@ -1,1 +1,0 @@
-/Users/igor/Code/zeromqlogs/zmqlogs.py

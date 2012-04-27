@@ -4,6 +4,8 @@ import logging
 import traceback
 import zmq
 
+from .config import ZMQ_BIND_ADDRESS
+
 VERSION = '0.0.1'
 
 class ZMQHandlerError(Exception):
@@ -18,11 +20,9 @@ class ZMQHandler(logging.Handler):
 
     def __init__(self, include_html=False):
         logging.Handler.__init__(self)
-        self.include_html = include_html
 
-        # Get socket instance
-        if self.socket is None or self.context is None:
-            self.init_zmq_socket()
+        self.include_html = include_html
+        self.init_zmq_socket()
 
     def init_zmq_socket(self):
         """Initialize a zmq connection
@@ -31,7 +31,7 @@ class ZMQHandler(logging.Handler):
         self.context = zmq.Context()
 
         self.socket = self.context.socket(zmq.PUB)
-        self.socket.bind('ipc:///tmp/zmqlogs')
+        self.socket.bind(ZMQ_BIND_ADDRESS)
 
         self.socket
 
@@ -46,6 +46,8 @@ class ZMQHandler(logging.Handler):
         data['datetime'] = datetime.datetime.now().isoformat()
 
         data['ip_address'] = record.request.META.get('REMOTE_ADDR')
+        data['http_host'] = record.request.META.get('HTTP_HOST')
+
         data['message'] = record.getMessage()
 
         if record.exc_info:
@@ -66,7 +68,7 @@ class ZMQHandler(logging.Handler):
 
         Return true or false depending on error or not"""
         try:
-            self.socket.send(formatted_message)
+            self.socket.send('{0}\n'.format(formatted_message))
         except Exception:
             # Gotta catch them' all
             return False

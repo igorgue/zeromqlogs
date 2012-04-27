@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+<html>
+  <body>
+    <h1>Log Something!</h1>
+
+    <form action="/" method="post" accept-charset="utf-8">
+      {% csrf_token %}
+      <p>
+      <label for="type">Type: 
+        <select name="type" id="type">
+          <option value="error">error</option>
+          <option value="warning">warning</option>
+          <option value="info">info</option>
+          <option value="debug">debug</option>
+          <option value="critical">critical</option>
+        </select>
+      </label>
+      </p>
+
+      <p>
+      <label for="message">Message: </label><textarea name="message" value="" id="message"></textarea>
+      </p>
+
+      <p><input type="submit" value="Send Log &rarr;"></p>
+    </form>
+  </body>
+</html>
