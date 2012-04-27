@@ -1,4 +1,5 @@
 # Django settings for zmqlogsexample project.
+import zmqlogs
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -142,12 +143,17 @@ LOGGING = {
             'level': 'ERROR',
             'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
+        },
+        'zmq': {
+            'level': 'DEBUG',
+            'filters': [],
+            'class': 'zmqlogs.ZMQHandler'
         }
     },
     'loggers': {
         'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
+            'handlers': ['zmq'],
+            'level': 'DEBUG',
             'propagate': True,
         },
     }
