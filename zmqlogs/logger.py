@@ -45,8 +45,9 @@ class ZMQHandler(logging.Handler):
 
         data['datetime'] = datetime.datetime.now().isoformat()
 
-        data['ip_address'] = record.request.META.get('REMOTE_ADDR')
-        data['http_host'] = record.request.META.get('HTTP_HOST')
+        if hasattr(record, 'request'):
+            data['ip_address'] = record.request.META.get('REMOTE_ADDR')
+            data['http_host'] = record.request.META.get('HTTP_HOST')
 
         data['message'] = record.getMessage()
 
