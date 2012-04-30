@@ -6,8 +6,6 @@ import zmq
 
 from .config import ZMQ_BIND_ADDRESS
 
-VERSION = '0.0.1'
-
 class ZMQHandlerError(Exception):
     pass
 
